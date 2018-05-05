@@ -9,7 +9,7 @@ Equation (1):
 * α1 = S(1), α1 ∈ {A, T, C, G}
 
 
-Encryption Algorithm: <br/>
+#####Encryption Algorithm: <br/>
 1. Get the nucleotide αn at position n from (n, X, Y ) based on
 Equation (1).
 2. Compute the x-coordinate at position i − 1 from that at
@@ -24,9 +24,9 @@ based on equation (3).
 6. Return the decoded nucleotide sequence of length n.
 7. 
 
-Decryption Algorithm: <br/>
+#####Decryption Algorithm: <br/>
 1. Get the nucleotide αn at position n from (n, X, Y ) based on
-Equation (3).
+Equation (1).
 2. Compute the x-coordinate at position i − 1 from that at
 position i: pi−1,x = pi,x − 2
 i−1αi,x.
