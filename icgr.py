@@ -27,6 +27,17 @@ def clean_file(this_file):                                                  # Tr
     return this_file
 
 
+def integer_cgr(i_val, x_val, y_val, x_alpha, y_alpha):                     # Integer Chaos Game Representation
+    if i_val == seq_len:
+        return i_val, x_val, y_val
+    else:
+        ++i_val
+        x_val += (2**(i_val-1)(x_alpha))
+        y_val += (2**(i_val-1)(y_alpha))
+
+    return integer_cgr()
+
+
 #############################################################################
 # File Handling and Core logic
 #############################################################################
