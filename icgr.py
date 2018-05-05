@@ -15,7 +15,7 @@ def clean_file(this_file):
     return this_file
 
 
-answer_file = open('answer.txt', 'a')
+answer_file = open('output.txt', 'a')
 answer_file = clean_file(answer_file)
 
 for n in seq:
