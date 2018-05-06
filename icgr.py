@@ -50,8 +50,21 @@ for n in seq:                                                               # Fo
     i_value = i_value + 1                                                   # increment i --> n
     alpha_x = cgr_coordinate[n][0]                                          # alpha_x = Nucleotide Xi coordinate
     alpha_y = cgr_coordinate[n][1]                                          # alpha_y = Nucleotide Yi coordinate
-    arr.append([i_value, alpha_x, alpha_y])                                 # Append (i, Xi, Yi) to the list
 
-answer_file.write(str(arr))                                                 # Write the list to the output file
-print('\n'.join([''.join(['{:4}'.format(item) for item in row])             # Matrix format for the list [debugging]
+    if i_value == 1:
+        px = (2 ** (i_value - 1)) * alpha_x
+        py = (2 ** (i_value - 1)) * alpha_y
+    elif i_value > 1:
+        px = px + (2 ** (i_value - 1)) * alpha_x
+        py = py + (2 ** (i_value - 1)) * alpha_y
+
+    arr.append([i_value, alpha_x, alpha_y, px, py])                          # Append (i, Xi, Yi) to the list
+
+answer_file.write(str(arr))                                                  # Write the list to the output file
+print('\n'.join([''.join(['{:10}'.format(item) for item in row])             # Matrix format for the list [debugging]
                  for row in arr]))
+
+big_x_value = arr[len(arr)-1][3]
+big_y_value = arr[len(arr)-1][4]
+
+print(big_x_value, big_y_value)
