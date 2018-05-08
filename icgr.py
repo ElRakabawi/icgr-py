@@ -5,8 +5,8 @@
 #############################################################################
 
 
-file = open('input.txt', 'r')                                                 # Open The file containing input
-seq = file.read()                                                             # Reading DNA sequence
+file = open('input.txt', 'r')                                               # Open The file containing input
+seq = file.read()                                                           # Reading DNA sequence
 
 
 def clean_file(this_file):                                                  # Truncating function for cleaning the file
@@ -43,8 +43,36 @@ def encode_icgr(dna_seq):                                                   # In
     return i_value, big_x_value, big_y_value
 
 
+def decode_icgr(i_value, big_x, big_y):                                     # Integer Chaos Game Representation Encoder
+    arr = []
+    cgr_coordinate = {(1, 1): 'A', (1, -1): 'G', (-1, 1): 'T', (-1, -1): 'C'}
+    alpha_x = 0
+    alpha_y = 0
+
+    for step in range(i_value, 0, -1):
+        if big_x > 0:
+            alpha_x = 1
+        elif big_x < 0:
+            alpha_x = -1
+
+        if big_y > 0:
+            alpha_y = 1
+        elif big_y < 0:
+            alpha_y = -1
+
+        big_x = (abs(big_x)-(2**(i_value-1)))*alpha_x
+        big_y = (abs(big_y) - (2 ** (i_value - 1))) * alpha_y
+        arr.append(cgr_coordinate[(alpha_x, alpha_y)])
+
+        i_value -= 1
+
+    return arr
+
+
 answer_file = open('output.txt', 'a')                                       # Open the file containing output
 answer_file = clean_file(answer_file)                                       # Truncate the file
 encoded = encode_icgr(seq)
 print('ICGR Encoding Done --> output.txt\n\n', 'i:', encoded[0], ', X:', encoded[1], ', Y:', encoded[2])
 answer_file.write(str(encode_icgr(seq)))
+x = decode_icgr(10, 659, 783)
+print(x)
