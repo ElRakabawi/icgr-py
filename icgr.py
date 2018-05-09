@@ -3,10 +3,15 @@
 # Paper: Yin, C. (2017). Encoding DNA sequences by integer chaos game representation
 # License: MIT
 #############################################################################
+import argparse
 
+parser = argparse.ArgumentParser(description='Integer Chaos Game Representation of DNA Encoder/Decoder script')
+parser.add_argument('-e', '--encode', type=str, help='Encode sequence from fasta file')
+parser.add_argument('-d', '--decode', type=str, help='Decode sequence from icgr file')
+parser.add_argument('-q', '--quiet', action='store_true', help='Will not print validity checks')
+args = parser.parse_args()
 
-file = open('input.txt', 'r')                                                   # Open The file containing input
-seq = file.read()                                                               # Reading DNA sequence
+################################ FUNCTIONS ###################################
 
 
 def clean_file(this_file):                                                      # Truncating function for cleaning the file
@@ -23,7 +28,7 @@ def encode_icgr(dna_seq):                                                       
     arr = []                                                                    # List of lists [(i,Xi,Yi)..(n, X, Yn)]
     cgr_coordinate = {'A': (1, 1), 'G': (1, -1), 'T': (-1, 1), 'C': (-1, -1)}   # Base mapping to coordinates
 
-    for n in seq:                                                               # For every nucleotide in sequence
+    for n in dna_seq:                                                               # For every nucleotide in sequence
         i_value = i_value + 1                                                   # increment i --> n
         alpha_x = cgr_coordinate[n][0]                                          # alpha_x = Nucleotide Xi coordinate
         alpha_y = cgr_coordinate[n][1]                                          # alpha_y = Nucleotide Yi coordinate
@@ -66,22 +71,48 @@ def decode_icgr(i_value, big_x, big_y):                                         
         i_value -= 1
 
     decoded_seq = ''.join(arr[::-1])                                            # Reverse and join chars to a string
-
     return decoded_seq                                                          # Return Decoded Sequence
 
 
-answer_file = open('output.txt', 'a')                                           # Open the file containing output
-answer_file = clean_file(answer_file)                                           # Truncate the file
-encoded = encode_icgr(seq)
-answer_file.write(str(encode_icgr(seq)))
+################################ CORE LOGIC ###################################
 
-print('ICGR Encoding Done --> output.txt\n\n', 'i:', encoded[0], ', X:', encoded[1], ', Y:', encoded[2])
+if args.encode:
+    fastapath = args.encode
+    seq_comments = []
+    fasta_seq = ''
+    with open(fastapath) as fp:
+        line = fp.readline()
+        cnt = 1
+        while line:
+            if line[0] == '>':
+                seq_desc = line
+            elif line[0] == ';':
+                seq_comments.append([line])
+            else:
+                line = line.replace('\n', '')
+                fasta_seq += line
+            line = fp.readline()
 
-x = decode_icgr(encoded[0], encoded[1], encoded[2])
-seq += 'A'
-print(x, seq)
+        seq_desc.replace('>', '>>>')
+        encoded_seq = encode_icgr(fasta_seq)
 
-if x == seq:
-    print('Right!')
-else:
-    print('Wrong')
+        answer_file = open('test.icgr', 'a')
+        answer_file = clean_file(answer_file)
+
+        answer_file.write(seq_desc)
+        answer_file.write(str(encoded_seq))
+        print('ICGR Encoding Done --> test.icgr', '\nI:', encoded_seq[0], '\nX:', encoded_seq[1], '\nY:', encoded_seq[2])
+
+        if not args.quiet:
+            decoded_seq = decode_icgr(encoded_seq[0], encoded_seq[1], encoded_seq[2])
+            decoded_seq += 'A'
+            if decoded_seq == fasta_seq:
+                print('\nValidity check returned True.\n')
+            else:
+                print('\nValidity check returned False. There is something wrong with the encryption')
+
+elif args.decode:
+    file = open(args.decode, 'r')
+    icgr = file.read()
+    print(icgr)
+
