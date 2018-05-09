@@ -4,6 +4,7 @@
 # License: MIT
 #############################################################################
 import argparse
+import re
 
 
 class bcolors:
@@ -121,13 +122,13 @@ if args.encode:
             print(' Fasta file path:', fastapath)
             if decoded_seq == fasta_seq:
                 print(bcolors.OKBLUE, 'Validity check returns True.', bcolors.ENDC)
-                print(bcolors.OKBLUE, 'ICGR Encoding Done (Trusted) --> ', icgrpath, bcolors.ENDC, '\nI:',
+                print(bcolors.OKBLUE, 'ICGR Encoding Done (Trusted) --> ', bcolors.WARNING, icgrpath, bcolors.ENDC, '\nI:',
                       encoded_seq[0], '\nX:', encoded_seq[1], '\nY:', encoded_seq[2])
             else:
                 print(bcolors.WARNING, 'Validity check returns False.', bcolors.ENDC)
                 choice = input(' Output file anyway? [y]: ')
                 if choice == 'y':
-                    print(bcolors.OKBLUE, 'ICGR Encoding Done (Not Trusted) --> ', icgrpath, bcolors.ENDC, '\n I:',
+                    print(bcolors.OKBLUE, 'ICGR Encoding Done (Not Trusted) --> ', bcolors.WARNING, icgrpath, bcolors.ENDC, '\n I:',
                           encoded_seq[0], '\n X:', encoded_seq[1], '\n Y:', encoded_seq[2])
                 else:
                     print(bcolors.FAIL, 'iCGR encoding was not completed due to internal error', bcolors.ENDC)
@@ -135,7 +136,7 @@ if args.encode:
         elif args.quiet:
             print(bcolors.HEADER, 'Script running in Quiet Mode.', bcolors.ENDC)
             if decoded_seq == fasta_seq:
-                print(bcolors.OKBLUE, 'ICGR Encoding Done (Trusted) --> ', icgrpath, bcolors.ENDC)
+                print(bcolors.OKBLUE, 'ICGR Encoding Done (Trusted) --> ', bcolors.WARNING, icgrpath, bcolors.ENDC)
             else:
                 print(bcolors.WARNING, 'ICGR Encoding Done (Not Trusted) --> ', icgrpath, bcolors.ENDC)
 
@@ -156,8 +157,10 @@ elif args.decode:
     answer_file = open(fastapath, 'a')
     answer_file = clean_file(answer_file)
 
-    answer_file.write(fasta_desc[2::])
-    answer_file.write(decoded_seq)
+    answer_file.write(fasta_desc[2:] + '\n')
+    answer_file.write(re.sub("(.{70})", "\\1\n", decoded_seq, 0, re.DOTALL))        # Printing sequence in fasta format
+
+    print(bcolors.OKBLUE, 'ICGR Decoding Done Successfully! -->', bcolors.WARNING, fastapath, bcolors.ENDC)
 
 
 
