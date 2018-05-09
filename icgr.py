@@ -5,6 +5,18 @@
 #############################################################################
 import argparse
 
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 parser = argparse.ArgumentParser(description='Integer Chaos Game Representation of DNA Encoder/Decoder script')
 parser.add_argument('-e', '--encode', type=str, help='Encode sequence from fasta file')
 parser.add_argument('-d', '--decode', type=str, help='Decode sequence from icgr file')
@@ -78,6 +90,7 @@ def decode_icgr(i_value, big_x, big_y):                                         
 
 if args.encode:
     fastapath = args.encode
+    icgrpath = fastapath[:fastapath.find('.')] + '.icgr'
     seq_comments = []
     fasta_seq = ''
     with open(fastapath) as fp:
@@ -96,20 +109,35 @@ if args.encode:
         seq_desc.replace('>', '>>>')
         encoded_seq = encode_icgr(fasta_seq)
 
-        answer_file = open('test.icgr', 'a')
+        decoded_seq = decode_icgr(encoded_seq[0], encoded_seq[1], encoded_seq[2])
+        answer_file = open(icgrpath, 'a')
         answer_file = clean_file(answer_file)
 
         answer_file.write(seq_desc)
         answer_file.write(str(encoded_seq))
-        print('ICGR Encoding Done --> test.icgr', '\nI:', encoded_seq[0], '\nX:', encoded_seq[1], '\nY:', encoded_seq[2])
 
         if not args.quiet:
-            decoded_seq = decode_icgr(encoded_seq[0], encoded_seq[1], encoded_seq[2])
-            decoded_seq += 'A'
+            print(bcolors.HEADER, 'Script running in Verbose Mode.\n Validity checks will be printed!', bcolors.ENDC)
+            print(' Fasta file path:', fastapath)
             if decoded_seq == fasta_seq:
-                print('\nValidity check returned True.\n')
+                print(bcolors.OKBLUE, 'Validity check returns True.', bcolors.ENDC)
+                print(bcolors.OKBLUE, 'ICGR Encoding Done (Trusted) --> ', icgrpath, bcolors.ENDC, '\nI:',
+                      encoded_seq[0], '\nX:', encoded_seq[1], '\nY:', encoded_seq[2])
             else:
-                print('\nValidity check returned False. There is something wrong with the encryption')
+                print(bcolors.WARNING, 'Validity check returns False.', bcolors.ENDC)
+                choice = input(' Output file anyway? [y]: ')
+                if choice == 'y':
+                    print(bcolors.OKBLUE, 'ICGR Encoding Done (Not Trusted) --> ', icgrpath, bcolors.ENDC, '\n I:',
+                          encoded_seq[0], '\n X:', encoded_seq[1], '\n Y:', encoded_seq[2])
+                else:
+                    print(bcolors.FAIL, 'iCGR encoding was not completed due to internal error', bcolors.ENDC)
+
+        elif args.quiet:
+            print(bcolors.HEADER, 'Script running in Quiet Mode.', bcolors.ENDC)
+            if decoded_seq == fasta_seq:
+                print(bcolors.OKBLUE, 'ICGR Encoding Done (Trusted) --> ', icgrpath, bcolors.ENDC)
+            else:
+                print(bcolors.WARNING, 'ICGR Encoding Done (Not Trusted) --> ', icgrpath, bcolors.ENDC)
 
 elif args.decode:
     file = open(args.decode, 'r')
