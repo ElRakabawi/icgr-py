@@ -96,7 +96,6 @@ if args.encode:
     fasta_seq = ''
     with open(fastapath) as fp:
         line = fp.readline()
-        cnt = 1
         while line:
             if line[0] == '>':
                 seq_desc = line
@@ -141,7 +140,25 @@ if args.encode:
                 print(bcolors.WARNING, 'ICGR Encoding Done (Not Trusted) --> ', icgrpath, bcolors.ENDC)
 
 elif args.decode:
-    file = open(args.decode, 'r')
-    icgr = file.read()
-    print(icgr)
+    icgrpath = args.decode
+    fastapath = icgrpath[:icgrpath.find('.')] + '.fasta'
+    open_file = open(icgrpath, 'r')
+
+    file_lines = open_file.readlines()
+    fasta_desc = file_lines[0].strip()
+
+    icgr_data = file_lines[1].strip(',')                                            # Split values from string
+    icgr_data = icgr_data[1:-1]                                                     # Removes brackets
+    icgr_data = icgr_data.split(',')                                                # String to tuple
+
+    decoded_seq = decode_icgr(int(icgr_data[0]), int(icgr_data[1]), int(icgr_data[2]))
+
+    answer_file = open(fastapath, 'a')
+    answer_file = clean_file(answer_file)
+
+    answer_file.write(fasta_desc[2::])
+    answer_file.write(decoded_seq)
+
+
+
 
