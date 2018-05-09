@@ -18,8 +18,9 @@ class bcolors:
 
 
 parser = argparse.ArgumentParser(description='Integer Chaos Game Representation of DNA Encoder/Decoder script')
-parser.add_argument('-e', '--encode', type=str, help='Encode sequence from fasta file')
-parser.add_argument('-d', '--decode', type=str, help='Decode sequence from icgr file')
+group = parser.add_mutually_exclusive_group(required=True)
+group.add_argument('-e', '--encode', type=str, help='Encode sequence from fasta file')
+group.add_argument('-d', '--decode', type=str, help='Decode sequence from icgr file')
 parser.add_argument('-q', '--quiet', action='store_true', help='Will not print validity checks')
 args = parser.parse_args()
 
@@ -106,7 +107,7 @@ if args.encode:
                 fasta_seq += line
             line = fp.readline()
 
-        seq_desc.replace('>', '>>>')
+        seq_desc = '>>{}'.format(seq_desc)
         encoded_seq = encode_icgr(fasta_seq)
 
         decoded_seq = decode_icgr(encoded_seq[0], encoded_seq[1], encoded_seq[2])
