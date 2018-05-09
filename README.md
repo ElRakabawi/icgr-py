@@ -7,14 +7,14 @@ representation](https://arxiv.org/pdf/1712.04546.pdf) by [Changchuan Yin](https:
 The script contains three main arguments.
 * -e / --encode (For encoding fasta sequence to icgr file)
  ```sh
-python icgr.py -e 'fasta file path' 
+-e 'fasta file path' # or --encode 'fasta file path'
 ```
 * -d / --decode (For decoding icgr data to fasta file)
  ```sh
-python icgr.py -d 'icgr file path' 
+-d 'icgr file path' # or --decode 'icgr file path'
 ```
 * -q / --quiet  (Anti-verbose mode will not print validity checks)
-
+<br />
 
 for example, to encode the fasta file with accession number: **M57671.1** found in the **test** folder. 
 ```sh
